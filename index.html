@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>舌苔辨識教學系統</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    .color-button { margin: 5px; padding: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h2>選擇舌頭部位與舌苔顏色</h2>
+
+  <!-- 舌頭圖片 (可用 SVG 或普通圖片) -->
+  <img src="tongue_diagram.png" usemap="#tongue-map" width="300" />
+
+  <!-- 點選區域 (要對應你圖片的位置) -->
+  <map name="tongue-map">
+    <area shape="rect" coords="100,10,200,60" alt="腎" onclick="selectRegion('腎')">
+    <area shape="rect" coords="50,60,120,150" alt="肝" onclick="selectRegion('肝')">
+    <area shape="rect" coords="180,60,250,150" alt="膽" onclick="selectRegion('膽')">
+    <area shape="rect" coords="100,150,200,230" alt="脾胃" onclick="selectRegion('脾胃')">
+  </map>
+
+  <!-- 顏色按鈕 -->
+  <div>
+    <button class="color-button" onclick="selectColor('白色')">白色</button>
+    <button class="color-button" onclick="selectColor('黃色')">黃色</button>
+    <button class="color-button" onclick="selectColor('棕色')">棕色</button>
+    <button class="color-button" onclick="selectColor('紅色')">紅色</button>
+  </div>
+
+  <!-- 顯示結果 -->
+  <div id="result" style="margin-top:20px;"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
