@@ -11,28 +11,30 @@
 <body>
   <h2>選擇舌頭部位與舌苔顏色</h2>
 
-  <!-- 舌頭圖片 (可用 SVG 或普通圖片) -->
-  <img src="images/tongue-diagram.jpg" alt="舌圖" width="300">
+  <!-- 舌頭圖片：加上 usemap -->
+  <img src="images/tongue-diagram.jpg" alt="舌圖" width="300" usemap="#tongue-map">
 
-  <!-- 點選區域 (要對應你圖片的位置) -->
+  <!-- 點選區域：定義每個部位 -->
   <map name="tongue-map">
-    <area shape="rect" coords="100,10,200,60" alt="腎" onclick="selectRegion('腎')">
-    <area shape="rect" coords="50,60,120,150" alt="肝" onclick="selectRegion('肝')">
-    <area shape="rect" coords="180,60,250,150" alt="膽" onclick="selectRegion('膽')">
-    <area shape="rect" coords="100,150,200,230" alt="脾胃" onclick="selectRegion('脾胃')">
+    <area shape="rect" coords="130,30,170,70" alt="腎" onclick="selectRegion('腎')">
+    <area shape="rect" coords="50,100,120,150" alt="肝" onclick="selectRegion('肝')">
+    <area shape="rect" coords="180,100,250,150" alt="膽" onclick="selectRegion('膽')">
+    <area shape="rect" coords="110,160,190,200" alt="脾胃" onclick="selectRegion('脾胃')">
+    <area shape="rect" coords="120,210,180,260" alt="心肺" onclick="selectRegion('心肺')">
   </map>
 
   <!-- 顏色按鈕 -->
   <div>
     <button class="color-button" onclick="selectColor('白色')">白色</button>
     <button class="color-button" onclick="selectColor('黃色')">黃色</button>
-    <button class="color-button" onclick="selectColor('棕色')">棕色</button>
+    <button class="color-button" onclick="selectColor('黑色')">黑色</button>
     <button class="color-button" onclick="selectColor('紅色')">紅色</button>
   </div>
 
   <!-- 顯示結果 -->
   <div id="result" style="margin-top:20px;"></div>
 
+  <!-- 引用 JS -->
   <script src="main.js"></script>
 </body>
 </html>
