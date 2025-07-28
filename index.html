@@ -29,7 +29,7 @@
   <div>
     <button class="color-button" onclick="selectColor('white')" style="background:white;">白色</button>
     <button class="color-button" onclick="selectColor('yellow')" style="background:gold;">黃色</button>
-    <button class="color-button" onclick="selectColor('brown')" style="background:brown; color:white;">棕色</button>
+    <button class="color-button" onclick="selectColor('black')" style="background:black; color:white;">黑色</button>
     <button class="color-button" onclick="selectColor('red')" style="background:red; color:white;">紅色</button>
   </div>
 
@@ -47,9 +47,9 @@
     const canvas = document.getElementById('tongueCanvas');
     const ctx = canvas.getContext('2d');
     const image = new Image();
-    image.src = 'images/tongue-diagram.jpg'; // 確保你的圖片路徑正確
-
-    const scale = 300 / 1024; // 圖片縮放比例
+    image.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8U...（此處省略，太長）';
+    
+    const scale = 300 / 1024;
     function scaleRect(x, y, w, h) {
       return {
         x: x * scale,
@@ -100,7 +100,7 @@
       if (selectedRegion && selectedColor) {
         const r = regions[selectedRegion];
         ctx.fillStyle = selectedColor;
-        ctx.globalAlpha = 0.6;
+        ctx.globalAlpha = 0.5;
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.globalAlpha = 1.0;
 
