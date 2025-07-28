@@ -12,6 +12,11 @@
       border: none;
       cursor: pointer;
     }
+    .color-button.white { background: white; border: 1px solid #ccc; }
+    .color-button.yellow { background: gold; color: black; }
+    .color-button.black { background: black; color: white; }
+    .color-button.red { background: red; color: white; }
+
     canvas {
       border: 1px solid #ccc;
       margin-top: 10px;
@@ -27,10 +32,10 @@
 
   <!-- 顏色按鈕 -->
   <div>
-    <button class="color-button" onclick="selectColor('white')" style="background:white;">白色</button>
-    <button class="color-button" onclick="selectColor('yellow')" style="background:gold;">黃色</button>
-    <button class="color-button" onclick="selectColor('black')" style="background:black; color:white;">黑色</button>
-    <button class="color-button" onclick="selectColor('red')" style="background:red; color:white;">紅色</button>
+    <button class="color-button white" onclick="selectColor('white')">白色</button>
+    <button class="color-button yellow" onclick="selectColor('yellow')">黃色</button>
+    <button class="color-button black" onclick="selectColor('black')">黑色</button>
+    <button class="color-button red" onclick="selectColor('red')">紅色</button>
   </div>
 
   <!-- Canvas -->
@@ -46,10 +51,12 @@
   <script>
     const canvas = document.getElementById('tongueCanvas');
     const ctx = canvas.getContext('2d');
+
+    // Base64 內嵌圖片
     const image = new Image();
-    image.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8U...（此處省略，太長）';
-    
-    const scale = 300 / 1024;
+    image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzcAAAMrCAYAAAB0xWw6AABP50lEQVR4nO39f3Re5WEn+n5p...（此處略，請貼上你完整的 base64 字串）';
+
+    const scale = 300 / 1024; // 圖片縮放比例
     function scaleRect(x, y, w, h) {
       return {
         x: x * scale,
@@ -100,7 +107,7 @@
       if (selectedRegion && selectedColor) {
         const r = regions[selectedRegion];
         ctx.fillStyle = selectedColor;
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.globalAlpha = 1.0;
 
