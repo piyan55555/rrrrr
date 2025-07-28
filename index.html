@@ -3,88 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <title>舌苔辨識教學系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: sans-serif; text-align: center; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
     .color-button {
       margin: 5px;
       padding: 10px;
-      border-radius: 8px;
-      border: 2px solid #888;
+      border-radius: 5px;
+      border: 2px solid #ccc;
       cursor: pointer;
       min-width: 60px;
-      font-weight: bold;
     }
-    svg { max-width: 100%; height: auto; }
-    .region:hover { opacity: 0.6; }
-    .highlight { opacity: 0.6; }
+
+    svg#tongueMap {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+    }
+
     #confirm-btn, #clear-btn {
       margin: 10px;
       padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h2>選擇舌頭部位與舌苔顏色</h2>
 
+  <!-- 顏色按鈕 -->
   <div>
     <button class="color-button" onclick="selectColor('white')" style="background:white;">白色</button>
-    <button class="color-button" onclick="selectColor('gold')" style="background:gold;">黃色</button>
+    <button class="color-button" onclick="selectColor('yellow')" style="background:gold;">黃色</button>
     <button class="color-button" onclick="selectColor('black')" style="background:black; color:white;">黑色</button>
     <button class="color-button" onclick="selectColor('red')" style="background:red; color:white;">紅色</button>
   </div>
 
-  <div style="display:inline-block; position:relative;">
-    <svg id="tongueSVG" viewBox="0 0 300 450" width="300" height="450">
-      <image href="data:image/jpeg;base64,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..." width="300" height="450"/>
-      <!-- 以下是互動區塊，請依實際舌苔位置調整 -->
-      <polygon id="腎" class="region" points="120,30 180,30 170,80 130,80" fill="transparent" stroke="black" onclick="selectRegion('腎')"/>
-      <polygon id="肝" class="region" points="40,130 100,130 100,190 40,190" fill="transparent" stroke="black" onclick="selectRegion('肝')"/>
-      <polygon id="膽" class="region" points="200,130 260,130 260,190 200,190" fill="transparent" stroke="black" onclick="selectRegion('膽')"/>
-      <polygon id="脾胃" class="region" points="120,200 180,200 180,260 120,260" fill="transparent" stroke="black" onclick="selectRegion('脾胃')"/>
-      <polygon id="心肺" class="region" points="120,280 180,280 180,350 120,350" fill="transparent" stroke="black" onclick="selectRegion('心肺')"/>
-    </svg>
-  </div>
+  <!-- 舌頭圖片與互動區塊 -->
+  <svg id="tongueMap" viewBox="0 0 1024 1536" preserveAspectRatio="xMidYMid meet">
+    <!-- Base64 圖片 -->
+    <image href="data:image/jpeg;base64,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xooopgHvRRSY9KQC0hpKdTASjvR1pR60gE6daKPrS0wE6c0dOtFKKBh2pOnNL0oxQIKTiilxQAlApc96TpSAKKAPSlzQAlFLkUUANopaT60DFoPWgUvemITvmk+tLiikAfSilooATHeilpKYxeKKKBSEHeiko6UAL0oopKYC0UUlIApaKKACk560UcmgAopQaKAE5pfakpaYAKKKToKQBx1opaKAD3o96OtFABR70UfSgAxSd6UikpgFKfejoaKAD2opc0UgG0UppfegBKSlopgf/9T92MU7vSe1A9qAEpfrSUvIpgFGaKKQCd6OetLRQAe4pKWkpgFL3pPeloAPekpaBQAnekxTqSkAtFJRQAtJ0o560p96ACg0lLk0AJS0lKfagA9qQCj6UtACUUvfigUwCkpaSgBaTpRS0gEowKSloAWigUd6YBSUtJQAUvTrSUo4pAFFHvSUwCiil5oAKTFLRQAlB96KKADiilpKADNHSiigAooxSnFIAoo5zRTAKDjNHSk5oAXmm0YzS0gCjvRRk5oAWjrSUvegBMelFLg0UAJS80fSkFAB34o5o6UtMBKB7UUd+KQwpKBS9OlAgooopgLRSUtAB7UmaMUe1IAoopaAEooozQMTnNKKOaKBBz1oo5petACGlNJ7Uv0oASjilNFMA4o5zmkpRSAO9LSUUwFpvvS0UhhjvRSfSigQUd6MelHegA6c0tJS5pgFHek+lFAB0ope+aSgBaKKPpQAUUlL0pAHek5pfekoAO1AyKOetLQAfWiiigA6UYopKYC96XtxSUYNIA6UUUYoASl70UUwE70tJmjHegD/1f3YpaKSgAzzRR3peKACk+tL0pOlMA6UtFBpAJRS0c5oASjpS9KKACk5oooAKX3FJS96YCe9FJS/WkAUUCigAo+lLQaACkopaAG06ik+lMBaKSj6UgClpKWgAoopKYC9DSUAc8UtIBKU0Gk9xQAD2opTRQAmO1LSUYpgL1ooo9qAEooooAKKKKACk70uKKQCU6k5zRQMKSnUlAgpelFHvQAlFHTijvQAuKKTFFMAoNHWikMU9aMUGkoEHFFFL0oAPpSUuMUmM0AFFJ9KXvzQAGkx3NLS0AFIKKWgBBR+NGOcUUAJS55o5pe9AxOKPpS0fWgQU0kmlo70AJS85opSOaAE6UUp560lABS0hooAKOtFKaAEpaKP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" 
+      x="0" y="0" width="1024" height="1536" />
 
-  <br>
+    <!-- 點選區塊：實際位置需根據圖片調整 -->
+    <g id="regionGroup" fill-opacity="0.5">
+      <rect id="腎" x="380" y="100" width="200" height="100" fill="transparent" stroke="gray" stroke-width="2" />
+      <rect id="肝" x="180" y="450" width="180" height="150" fill="transparent" stroke="gray" stroke-width="2" />
+      <rect id="膽" x="660" y="450" width="180" height="150" fill="transparent" stroke="gray" stroke-width="2" />
+      <rect id="脾胃" x="400" y="750" width="200" height="150" fill="transparent" stroke="gray" stroke-width="2" />
+      <rect id="心肺" x="420" y="1050" width="180" height="150" fill="transparent" stroke="gray" stroke-width="2" />
+    </g>
+  </svg>
+
   <button id="clear-btn" onclick="clearSelection()">清除</button>
   <button id="confirm-btn" onclick="showResult()">確認</button>
 
+  <!-- 顯示結果 -->
   <div id="result" style="margin-top:20px;"></div>
 
+  <!-- JS邏輯 -->
   <script>
     let selectedRegion = null;
     let selectedColor = null;
 
-    function selectRegion(regionId) {
-      selectedRegion = regionId;
-      redrawHighlights();
-    }
+    // 加入點擊事件給每個區域
+    document.querySelectorAll('#regionGroup rect').forEach(rect => {
+      rect.addEventListener('click', () => {
+        selectedRegion = rect.id;
+        highlightRegion();
+      });
+    });
 
     function selectColor(color) {
       selectedColor = color;
-      redrawHighlights();
+      highlightRegion();
     }
 
-    function redrawHighlights() {
-      document.querySelectorAll('.region').forEach(region => {
-        region.setAttribute('fill', 'transparent');
-        region.classList.remove('highlight');
+    function highlightRegion() {
+      document.querySelectorAll('#regionGroup rect').forEach(rect => {
+        if (rect.id === selectedRegion && selectedColor) {
+          rect.setAttribute('fill', selectedColor);
+        } else {
+          rect.setAttribute('fill', 'transparent');
+        }
       });
-
-      if (selectedRegion && selectedColor) {
-        const region = document.getElementById(selectedRegion);
-        region.setAttribute('fill', selectedColor);
-        region.classList.add('highlight');
-      }
     }
 
     function clearSelection() {
       selectedRegion = null;
       selectedColor = null;
       document.getElementById('result').innerHTML = '';
-      redrawHighlights();
+      document.querySelectorAll('#regionGroup rect').forEach(rect => {
+        rect.setAttribute('fill', 'transparent');
+      });
     }
 
     function showResult() {
@@ -100,7 +118,7 @@
         '心肺_red': "心火旺盛，舌紅煩躁。中藥建議：蓮子心、丹參。"
       };
 
-      document.getElementById('result').innerHTML = data[key] || '此組合尚未設定';
+      document.getElementById('result').innerText = data[key] || '此組合尚未設定';
     }
   </script>
 </body>
