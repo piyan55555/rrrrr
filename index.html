@@ -1,13 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <title>舌苔辨識教學系統</title>
   <style>
     body { font-family: sans-serif; text-align: center; }
-    .color-button { margin: 5px; padding: 10px; border-radius: 5px; }
-    canvas { border: 1px solid #ccc; margin-top: 10px; }
-    #confirm-btn, #clear-btn { margin: 10px; padding: 10px 15px; }
+    .color-button {
+      margin: 5px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    #confirm-btn, #clear-btn {
+      margin: 10px;
+      padding: 10px 15px;
+    }
   </style>
 </head>
 <body>
@@ -17,11 +29,11 @@
   <div>
     <button class="color-button" onclick="selectColor('white')" style="background:white;">白色</button>
     <button class="color-button" onclick="selectColor('yellow')" style="background:gold;">黃色</button>
-    <button class="color-button" onclick="selectColor('brown')" style="background:brown; color:white">棕色</button>
-    <button class="color-button" onclick="selectColor('red')" style="background:red; color:white">紅色</button>
+    <button class="color-button" onclick="selectColor('brown')" style="background:brown; color:white;">棕色</button>
+    <button class="color-button" onclick="selectColor('red')" style="background:red; color:white;">紅色</button>
   </div>
 
-  <!-- Canvas + Buttons -->
+  <!-- Canvas -->
   <canvas id="tongueCanvas" width="300" height="450"></canvas>
   <br>
   <button id="clear-btn" onclick="clearSelection()">清除</button>
@@ -30,23 +42,33 @@
   <!-- 顯示結果 -->
   <div id="result" style="margin-top:20px;"></div>
 
+  <!-- JavaScript -->
   <script>
     const canvas = document.getElementById('tongueCanvas');
     const ctx = canvas.getContext('2d');
     const image = new Image();
-    image.src = 'images/tongue-diagram.jpg';
+    image.src = 'images/tongue-diagram.jpg'; // 確保你的圖片路徑正確
+
+    const scale = 300 / 1024; // 圖片縮放比例
+    function scaleRect(x, y, w, h) {
+      return {
+        x: x * scale,
+        y: y * scale,
+        w: w * scale,
+        h: h * scale
+      };
+    }
 
     const regions = {
-      "腎": { x: 111, y: 29, w: 59, h: 30 },
-      "肝": { x: 53, y: 132, w: 52, h: 44 },
-      "膽": { x: 193, y: 132, w: 53, h: 44 },
-      "脾胃": { x: 117, y: 220, w: 59, h: 44 },
-      "心肺": { x: 123, y: 307, w: 53, h: 45 }
+      "腎": scaleRect(380, 100, 200, 100),
+      "肝": scaleRect(180, 450, 180, 150),
+      "膽": scaleRect(660, 450, 180, 150),
+      "脾胃": scaleRect(400, 750, 200, 150),
+      "心肺": scaleRect(420, 1050, 180, 150)
     };
 
     let selectedRegion = null;
     let selectedColor = null;
-    let finalSelection = null;
 
     image.onload = () => {
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -78,11 +100,12 @@
       if (selectedRegion && selectedColor) {
         const r = regions[selectedRegion];
         ctx.fillStyle = selectedColor;
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.6;
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.globalAlpha = 1.0;
 
         ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
         ctx.strokeRect(r.x, r.y, r.w, r.h);
       }
     }
@@ -90,7 +113,6 @@
     function clearSelection() {
       selectedRegion = null;
       selectedColor = null;
-      finalSelection = null;
       document.getElementById('result').innerHTML = '';
       redrawCanvas();
     }
