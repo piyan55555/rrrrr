@@ -11,12 +11,8 @@
       border-radius: 5px;
       border: none;
       cursor: pointer;
+      font-weight: bold;
     }
-    .color-button.white { background: white; border: 1px solid #ccc; }
-    .color-button.yellow { background: gold; color: black; }
-    .color-button.black { background: black; color: white; }
-    .color-button.red { background: red; color: white; }
-
     canvas {
       border: 1px solid #ccc;
       margin-top: 10px;
@@ -32,10 +28,10 @@
 
   <!-- 顏色按鈕 -->
   <div>
-    <button class="color-button white" onclick="selectColor('white')">白色</button>
-    <button class="color-button yellow" onclick="selectColor('yellow')">黃色</button>
-    <button class="color-button black" onclick="selectColor('black')">黑色</button>
-    <button class="color-button red" onclick="selectColor('red')">紅色</button>
+    <button class="color-button" onclick="selectColor('white')" style="background:white; color:black;">白色</button>
+    <button class="color-button" onclick="selectColor('yellow')" style="background:gold;">黃色</button>
+    <button class="color-button" onclick="selectColor('black')" style="background:black; color:white;">黑色</button>
+    <button class="color-button" onclick="selectColor('red')" style="background:red; color:white;">紅色</button>
   </div>
 
   <!-- Canvas -->
@@ -51,19 +47,12 @@
   <script>
     const canvas = document.getElementById('tongueCanvas');
     const ctx = canvas.getContext('2d');
-
-    // Base64 內嵌圖片
     const image = new Image();
-    image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzcAAAMrCAYAAAB0xWw6AABP50lEQVR4nO39f3Re5WEn+n5p...（此處略，請貼上你完整的 base64 字串）';
+    image.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgG...（中略，請將整串貼上）...'; // 你的 Base64 字串
 
-    const scale = 300 / 1024; // 圖片縮放比例
+    const scale = 300 / 1024;
     function scaleRect(x, y, w, h) {
-      return {
-        x: x * scale,
-        y: y * scale,
-        w: w * scale,
-        h: h * scale
-      };
+      return { x: x * scale, y: y * scale, w: w * scale, h: h * scale };
     }
 
     const regions = {
@@ -85,9 +74,9 @@
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-
       for (const [name, region] of Object.entries(regions)) {
-        if (x >= region.x && x <= region.x + region.w && y >= region.y && y <= region.y + region.h) {
+        if (x >= region.x && x <= region.x + region.w &&
+            y >= region.y && y <= region.y + region.h) {
           selectedRegion = name;
           redrawCanvas();
           break;
@@ -103,14 +92,12 @@
     function redrawCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
       if (selectedRegion && selectedColor) {
         const r = regions[selectedRegion];
         ctx.fillStyle = selectedColor;
-        ctx.globalAlpha = 0.6;
+        ctx.globalAlpha = 0.4;
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.globalAlpha = 1.0;
-
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
         ctx.strokeRect(r.x, r.y, r.w, r.h);
@@ -129,14 +116,12 @@
         alert('請先選擇部位與顏色');
         return;
       }
-
       const key = `${selectedRegion}_${selectedColor}`;
       const data = {
         '腎_white': "腎陽虛，腰痠怕冷。中藥建議：附子、杜仲。",
         '脾胃_yellow': "脾胃濕熱，口苦納呆。中藥建議：黃連、茯苓。",
         '心肺_red': "心火旺盛，舌紅煩躁。中藥建議：蓮子心、丹參。"
       };
-
       document.getElementById('result').innerHTML = data[key] || '此組合尚未設定';
     }
   </script>
