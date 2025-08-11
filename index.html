@@ -89,50 +89,70 @@
   <script>
     let selectedRegion = null;
     let selectedColor  = null;
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  // ===== 狀態 =====
+  let selectedRegion = null;        // 例如：'脾胃'
+  let selectedColorCode = null;     // 例如：'black'（程式用）
+  const colorName = { white:'白色', gold:'黃色', black:'黑色', red:'紅色' };
 
-    const regionRow = document.getElementById('regionRow');
-    const colorRow  = document.getElementById('colorRow');
-    const selRegionEl = document.getElementById('selRegion');
-    const selColorEl  = document.getElementById('selColor');
-    const resultEl    = document.getElementById('result');
+  const regionRow   = document.getElementById('regionRow');
+  const colorRow    = document.getElementById('colorRow');
+  const selRegionEl = document.getElementById('selRegion');
+  const selColorEl  = document.getElementById('selColor');
+  const resultEl    = document.getElementById('result');
 
-    // 1) 部位按鈕
-    regionRow.querySelectorAll('.btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        regionRow.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedRegion = btn.dataset.region;
-        selRegionEl.textContent = selectedRegion;
-      }, { passive:true });
-    });
-
-    // 2) 顏色按鈕
-    colorRow.querySelectorAll('.btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        colorRow.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedColor = btn.dataset.color;
-        const map = { white:'白色', gold:'黃色', black:'黑色', red:'紅色' };
-        selColorEl.textContent = map[selectedColor] || '—';
-      }, { passive:true });
-    });
-
-    // 3) 清除
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      selectedRegion = null; selectedColor = null;
-      selRegionEl.textContent = '—'; selColorEl.textContent = '—';
+  // === 部位 ===
+  regionRow.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
       regionRow.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      colorRow .querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-      resultEl.textContent = '請依序選擇部位與顏色，然後按「確認」。';
-    });
+      btn.classList.add('active');
+      selectedRegion = btn.dataset.region;    // '腎'、'肝'、'膽'、'脾胃'、'心肺'
+      selRegionEl.textContent = selectedRegion;
+    }, { passive:true });
+  });
 
-    // 4) 確認 → 顯示結論
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-      if (!selectedRegion || !selectedColor) {
-        alert('請先選擇「部位」與「顏色」'); return;
-      }
-      const key = `${selectedRegion}_${selectedColor}`;
-      const data = {
+  // === 顏色（用代碼存、中文顯示）===
+  colorRow.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      colorRow.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedColorCode = btn.dataset.color;  // 'white' | 'gold' | 'black' | 'red'
+      selColorEl.textContent = colorName[selectedColorCode] || '—';
+    }, { passive:true });
+  });
+
+  // === 清除 ===
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    selectedRegion = null;
+    selectedColorCode = null;
+    selRegionEl.textContent = '—';
+    selColorEl.textContent  = '—';
+    regionRow.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    colorRow .querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    resultEl.textContent = '請依序選擇部位與顏色，然後按「確認」。';
+  });
+
+  // === 確認 ===
+  document.getElementById('confirmBtn').addEventListener('click', () => {
+    if (!selectedRegion || !selectedColorCode) {
+      alert('請先選擇「部位」與「顏色」'); return;
+    }
+    const key = `${selectedRegion}_${selectedColorCode}`; // 例如 '脾胃_black'
+    // console.log('查詢鍵：', key);
+
+    const hit = data[key];  // ← 用你前面 20 組的 data 物件
+    if (hit) {
+      resultEl.innerHTML =
+        `<b>分析：</b>${hit.message}<br><b>建議：</b>${hit.herb}<br><i>${hit.classic}</i>`;
+      resultEl.scrollIntoView({ behavior:'smooth', block:'center' });
+    } else {
+      resultEl.textContent = '此組合尚未設定。';
+    }
+  });
+});
+</script>
+
   // 腎（舌根/後部）
   "腎_white": {
     message: "多見腎陽不足或寒濕偏盛，根部白潤或白膩。",
