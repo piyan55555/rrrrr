@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function () {
     const key = `${selectedRegion}_${selectedColorCode}`;
     const hit = data[key];
     if (hit) {
-      resultEl.innerHTML = `<b>分析：</b>${hit.message}<br><b>建議：</b>${hit.herb}<br><i>${hit.classic}</i>`;
+      resultEl.innerHTML = `<b>分析：</b>${hit.message}<br><b>建議服用：</b>${hit.herb}<br><i>${hit.classic}</i>`;
     } else {
       resultEl.textContent = '此組合尚未設定。';
     }
